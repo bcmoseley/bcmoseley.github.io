@@ -1,8 +1,8 @@
 # Site wide configuration
 
-title:            Site Title
+title:            "Brian Moseley"
 locale:           en_US
-url:              
+url:              ""
 
 
 # Jekyll configuration
@@ -26,12 +26,12 @@ kramdown:
 
 # Site owner
 owner:
-  name: Your Name
+  name: Brian Moseley
   avatar: bio-photo.jpg
-  bio: "Describe your self."
-  email: 
+  bio: "Music theorist at the University at Buffalo. "
+  email: moseleybc@gmail.com
   disqus-shortname: 
-  twitter: #username
+  twitter: bcmoseley
   facebook: #username
   google:
     plus: #username
@@ -40,7 +40,7 @@ owner:
     ad-client: 
     ad-slot: 
   bing-verify: 
-  github: #username
+  github: bcmoseley
   stackoverflow: #http://stackoverflow.com/users/123456/username
   linkedin: #username
   instagram: #username
