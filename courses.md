@@ -9,8 +9,9 @@ image:
 ---
 
 ##Upcoming Courses
-Current Trends in Music Theory  
-Harmony and Counterpoint 2
+[Harmony and Counterpoint 2](/mus106)  
+[Current Trends in Music Theory](/mus613)  
+
 
 ##Online Resources
 [Open Music Theory](http://openmusictheory.com "Open Music Theory")
