@@ -1,16 +1,16 @@
 ---
-layout: page
+layout: article
 title: "Courses"
 description: "This is what I teach."
-image:
-  feature: sample-image-4.jpg
-  credit: WeGraphics
-  creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
 
-##Upcoming Courses
-[Harmony and Counterpoint 2](/mus106)  
-[Current Trends in Music Theory](/mus613)  
+##Current Courses
+[Harmony and Counterpoint 1](/mus105) - Fall 2016  
+[History of Music Theory II](/mus613) - Fall 2016
+
+##Past Courses
+[Harmony and Counterpoint 2](/mus106) - Spring 2015  
+[Current Trends in Music Theory](/mus613) - Spring 2015  
 
 
 ##Online Resources

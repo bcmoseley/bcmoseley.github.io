@@ -15,9 +15,8 @@ GEM
     fast-stemmer (1.0.2)
     ffi (1.9.6)
     ffi (1.9.6-x64-mingw32)
-    ffi (1.9.6-x86-mingw32)
     hitimes (1.2.2)
-    jekyll (2.5.1)
+    jekyll (2.4.0)
       classifier-reborn (~> 2.0)
       colorator (~> 0.1)
       jekyll-coffeescript (~> 1.0)
@@ -38,7 +37,7 @@ GEM
     jekyll-paginate (1.1.0)
     jekyll-sass-converter (1.2.1)
       sass (~> 3.2)
-    jekyll-sitemap (0.6.2)
+    jekyll-sitemap (0.6.1)
     jekyll-watch (1.1.2)
       listen (~> 2.7)
     kramdown (1.5.0)
@@ -83,14 +82,13 @@ GEM
     toml (0.1.2)
       parslet (~> 1.5.0)
     yajl-ruby (1.1.0)
-    yajl-ruby (1.1.0-x86-mingw32)
 
 PLATFORMS
   ruby
   x64-mingw32
-  x86-mingw32
 
 DEPENDENCIES
-  jekyll
-  jekyll-sitemap
+  jekyll (~> 2.4.0)
+  jekyll-sitemap (~> 0.6.1)
   octopress (~> 3.0.0.rc.12)
+  sass

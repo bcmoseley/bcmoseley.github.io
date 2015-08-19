@@ -1,10 +1,6 @@
 ---
 title: Curriculum Vitae
-layout: page
-image:
-  feature: sample-image-5.jpg
-  credit: WeGraphics
-  creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
+layout: article
 ---
 
 ##Education##

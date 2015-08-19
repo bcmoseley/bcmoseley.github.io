@@ -2,12 +2,14 @@
 
 - title: About
   url: /about.html
+  excerpt:
+  image:
 
-- title: Curriculum Vitae
+- title: CV
   url: /cv.html
 
 - title: Research
-  url: /research.html
+  url: /research.html 
 
 - title: Courses
   url: /courses.html

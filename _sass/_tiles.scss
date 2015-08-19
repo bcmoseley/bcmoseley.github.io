@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Tiles
+   ========================================================================== */
+
+/* ==========================================================================
+   Blog Post Tiles
+   ========================================================================== */
+
+
+.blog-tile {
+  @include outer-container;
+  margin-bottom: $gutter;
+  @include media($micro) {
+    @include fill-parent;
+  }
+  @include media(new-breakpoint(min-width em(480) 12)) {
+    @include span-columns(3);
+    @include omega(4n);
+  }
+  .entry-date {
+    @include font-size(16,no);
+    color: lighten($text-color,25);
+  }
+  .post-title {
+    @include font-size(18,no);
+  }
+  .post-excerpt {
+    @include font-size(16);
+  }
+  .post-teaser {
+    position: relative;
+    display: block;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba($base-color,0);
+      pointer-events: none;
+      @include transition(background 0.3s);
+    }
+    &:hover {
+      &:after {
+        background: rgba($base-color,0.2);
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   Graphics Tiles
+   ========================================================================== */
+
+/* ==========================================================================
+   TILES
+   ========================================================================== */
+
+/*
+   Tile content
+   ========================================================================== */
+
+.tile {
+  position: relative;
+  float: left;
+  width: 100%;
+  @include media($small) {
+    width: 50%;
+  }
+  @include media($medium) {
+    width: 33.33333333333333%;
+  }
+  &:before {
+    content: "";
+    display: block;
+    padding-top: 75%;
+  }
+
+  &.t1 {
+    @include media($medium) {
+      width: 66.66666666666667%;
+    }
+  }
+  &.t2,
+  &.t3 {
+    @include media($medium) {
+      width: 33.33333333333333%;
+    }
+  }
+  &.t4,
+  &.t5 {
+    @include media($medium) {
+      width: 50%;
+    }
+  }
+
+  .tile-inner {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    bottom: 0.5em;
+    left: 0.5em;
+    background-color: #333;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .tile-cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    // background-image: linear-gradient(200deg, rgba($black, 0.0823529) 0%, rgba($black, 0.0823529) 10%, rgba($black, 0.0823529) 20%, rgba($black, 0.0823529) 30%, rgba($black, 0.0901961) 40%, rgba($black, 0.215686) 50%, rgba($black, 0.423529) 60%, rgba($black, 0.631373) 70%, rgba($black, 0.760784) 80%, rgba($black, 0.823529) 90%, rgba($black, 0.847059) 100%);
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    transition: 0.2s ease-out;
+    &:hover {
+      background-color: $black;
+      box-shadow: 0 0 10px rgba($black, 0.20);
+      .tile-info {
+        opacity: 1;
+      }
+    }
+  }
+
+  .tile-info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 1em;
+    transition: 0.2s ease-out;
+    /* center text vertically in div */
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    opacity: 0; // hide at load
+  }
+
+  .tile-meta {
+    margin-top: 0;
+    font-family: $alt-font;
+    @include font-size(14, no);
+    color: $white;
+    text-shadow: 1px 1px 0 $black;
+    display: none;
+  }
+
+  .tile-title {
+    font-family: $heading-font;
+    @include font-size(16, no);
+    font-weight: 500;
+    margin-top: 0;
+    color: $white;
+    text-shadow: 1px 1px 0 $black;
+    @include media($large) {
+      @include font-size(20, no);
+    }
+    a {
+      text-decoration: none;
+      color: $white;
+    }
+  }
+
+  .tile-excerpt {
+    font-family: $alt-font;
+    @include font-size(14, no, 16);
+    margin: 6px auto;
+    max-width: 320px;
+    color: $white;
+  }
+}
+
+/* touch devices */
+.touch {
+  .tile {
+    .tile-info {
+      top: initial;
+      bottom: 0;
+      text-align: initial;
+      background: $black;
+      opacity: 1;
+      -webkit-transform: initial;
+      -ms-transform: initial;
+      transform: initial;
+    }
+    .tile-excerpt {
+      display: none;
+    }
+  }
+}
+
+
+/*
+   Tiles container 3/4 width (used with sidebar layout)
+   ========================================================================== */
+
+.tiles-right {
+  @include media($small) {
+    float: right;
+    width: 75%;
+  }
+}
+
