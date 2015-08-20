@@ -11,20 +11,21 @@ image:
 date: 2015-08-11T08:50:13-04:00
 ---
 
-There are lots of great reasons to ask students to submit assignments to a cloud-based service like Google Drive or Dropbox. When students submit work online, you have a digital file that's hard to lose, accessible almost anywhere, and timestamped. 
+Cloud-based services like Google Drive and Dropbox can be great ways to have students submit assignments. When students submit work online, you have a digital file that's hard to lose (and they do too), the file is accessible almost anywhere, and its timestamped. 
 
 In the past, I've used Google Drive as a place for students to submit counterpoint assignments—which I grade digitally using [iAnnotate](http://www.iannotate.com) on my iPad; formal diagrams created with [Variations Audio Timeliner](http://flipcamp.org/engagingstudents2/essays/moseley.html); and most successfully, to [submit prepared singing assignments](http://flipcamp.org/engagingstudents/deClercq.html) that they've [recorded on their smartphones](http://briancmoseley.com/dropvox/) or through their computer.
 
-But uploading a file to Google Drive or Dropbox requires students to have an account associated with one of those services. I feel bad making students sign up for additional services. And millennials aren't as tech savvy as we often think! To upload a homework assignment, they'll have to learn to share folders and files— a great skill to teach to a small class, but when you're dealing with a large group, you might spend a lot of time helping students troubleshoot. 
+But uploading a file to Google Drive or Dropbox requires students to have an account associated with one of those services. If you're going to have them submit assignments regularly, it's probably worth having them sign up for a Drive account. Often enough, though, these are one-off submissions in my class, and signing up for a Drive account is more trouble than it's worth. 
 
-<span class="marginnote"><img src="/images/submitter/submission.png">Figure 1. The submission form is easily customized.</span>A few months ago I used [Google Apps Script](https://developers.google.com/apps-script/?hl=en) to create a form for submitting files to Google Drive—all without logging into a Drive account.  The form was designed for other purposes, byt it can used to submit any kind of file along with identifying information. Your students simply visit a webpage, enter their name and any other information you want to record, and upload the file. It's completely customizable. The files will show up in a Google Drive folder that you specify and that only you (or you and your TAs) can access. 
+A few months ago I used [Google Apps Script](https://developers.google.com/apps-script/?hl=en) to create a form for submitting files to Google Drive—all without logging into a Drive account. The form was designed for other purposes, but it can used to submit any kind of file along with identifying information. Your students simply visit a webpage, enter their name and any other information you want to record, and upload the file. It's completely customizable. The files will show up in a Google Drive folder that you specify and that only you (or you and your TAs) can access. 
 
-You can try it by following this link, and view the submission data here.
+You can try it by [following this link](https://script.google.com/macros/s/AKfycbxENcuU8p2tIbFS_tspe2a-yYtu47V6DwNGbBV2YcjkkOlznbXa/exec). Submit a file and you can [see the submission data here](
+).
 <hr>
-<span class="newthought">Assuming you already have a Google Drive account</span>, here's how to do it. I promise, it's not that difficult!
+Assuming you already have a Google Drive account, here's how to do it. I promise, it's not that difficult!
 
 ###Create a copy of the script file in your  Google Drive folder
-Follow [this link](https://script.google.com/d/1S4cAW34AjabzbqmZvAYVduvUIPKxOPTzPZBJEzm-LQ6DRTpv8lU2ceP-/edit?usp=sharing). In the menu, choose "File > Make a Copy" to save it to your Drive, and give it a name.
+Follow [this link](https://script.google.com/d/1S4cAW34AjabzbqmZvAYVduvUIPKxOPTzPZBJEzm-LQ6DRTpv8lU2ceP-/edit?usp=sharing). In the menu, choose "File > Make a Copy" to save it to your Drive, and give it a name that you'll remember.
 
 <div id="content" class="page-content">
   <figure class="half">
@@ -33,6 +34,7 @@ Follow [this link](https://script.google.com/d/1S4cAW34AjabzbqmZvAYVduvUIPKxOPTz
     <figcaption>Follow the link, make a copy.</figcaption>
   </figure>
 </div>
+
 
 ###Create a submission folder and spreadsheet
 
@@ -98,20 +100,20 @@ First, in the {% raw %}function processForm(theForm){% endraw %} section:
 
 {% highlight js%}
 {% raw %}
-  //Get the name of the assignment
-    var assignmentName = theForm.assignmentName;
-  //Get the student's name
-    var name = theForm.name;
-  //Student Email
-    var email = theForm.email;
-  //Add new fields here:
-		var section = theForm.section;
+//Get the name of the assignment
+var assignmentName = theForm.assignmentName;
+//Get the student's name
+var name = theForm.name;
+//Student Email
+var email = theForm.email;
+//Add new fields here:
+var section = theForm.section;
 {% endraw %}
 {% endhighlight %}
 
-See how **var section = theForm.section** relates to {% raw %}<input name="section" type="text"/>{% endraw %}?
+See how `var section = theForm.section` relates to `<input> name="section" type="text"/>`?
 
-Finally, next to {% raw %}**var targetRange**{% endraw %}:
+Finally, next to `var targetRange`:
 
 {% highlight js%}
 {% raw %}
