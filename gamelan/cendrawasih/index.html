@@ -148,11 +148,10 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
 <div class="wrap">
 <header>
   <h1>Cendrawasih</h1>
-  <p class="sub">Cipher transcription with the recording attached. Click any instrument line to hear
-     that part alone. Sections A, B and C are each played three times, so pick which pass you want
-     to hear. The audio is raised 105 cents to sit with our gamelan.</p>
+  <p class="sub">Transcription with recordings. Click any instrument line to hear
+     that part alone, for exactly the bars on that line. Or, click "full ensemble" to hear an entire section. The audio is raised a semitone to sit with
+     our own gamelan, so you can play along and you can also loop it!</p>
   <div class="legend">
-    <span><b>1</b>=C♯ <b>2</b>=D♯ <b>3</b>=E <b>4</b>=F♯ <b>5</b>=G♯ <b>6</b>=A <b>7</b>=B</span>
     <span><b>.</b> still ringing</span>
     <span><b>x</b> rim / kajar stroke</span>
     <span style="color:var(--warn)">▲ no stem of its own — see the note below</span>
@@ -177,12 +176,7 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
 </div>
 
 <details class="cal" id="cal">
-  <summary>Timing — fitted to the recording, adjust if you need to</summary>
-  <p>The piece holds a steady 3.21 seconds a bar throughout, except the transition before C,
-     which stretches to about 4.57. These four points are your measurements; everything between
-     them is spaced evenly. Against the gong strokes in the recording, 87% land within three
-     tenths of a second of this map, median error 0.06, with no drift across the eleven minutes.
-     Nudge anything that sits wrong; changes stay on this device.</p>
+  <summary>Timing was fitted by Claude to the recording, but you can adjust if you need to.</summary>
   <div class="calgrid" id="calgrid"></div>
   <div class="calfoot">
     <button class="btn" id="calreset">Reset to my estimates</button>
@@ -190,18 +184,6 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
   </div>
 </details>
 
-<div id="score"></div>
-
-<div class="note">
-  <p><b>Two lines have no stem of their own.</b> Kendang Wadon falls back to the full mix, and
-     Kajar plays the gongs stem it was recorded on. Those two are marked ▲. Everything else —
-     jegog, calung, both gangsa and all four reyong — plays its own separated track. The kendang
-     line appears only in the bars where the sheet carries it.</p>
-  <p><b>Pitch.</b> Every stem is raised 105 cents, measured against our gamelan: the two were
-     about a semitone apart. Tempo is untouched.</p>
-  <p>The recording runs 11 minutes over 97 notated bars, because A, B and C each repeat three
-     times — 203 bars played in all. The last bar ends at 10:58, and what follows is ring-out.</p>
-</div>
 </div>
 
 <script>
