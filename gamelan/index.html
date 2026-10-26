@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gamelan Transcriptions</title>
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f4f1; --surface:#fbfcfa; --sunk:#eceee9; --ink:#1a211e; --muted:#69736d;
+  --line:#dde2dc; --rule:#b4bdb5; --bronze:#8a6a2f; --bronze-soft:#efe3c7;
+  --serif:"IBM Plex Serif",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#131614; --surface:#1b1f1d; --sunk:#232825; --ink:#e7eae6; --muted:#939d96;
+  --line:#2b312d; --rule:#454e48; --bronze:#d2ab57; --bronze-soft:#3b3220; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#131614; --surface:#1b1f1d; --sunk:#232825; --ink:#e7eae6; --muted:#939d96;
+  --line:#2b312d; --rule:#454e48; --bronze:#d2ab57; --bronze-soft:#3b3220; color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);margin:0;
+     line-height:1.55;-webkit-text-size-adjust:100%}
+main{max-width:46rem;margin:0 auto;padding:3rem 1rem 5rem}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,4.5vw,2.1rem);
+   margin:0 0 .5rem;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 2.5rem;max-width:34rem}
+.card{display:block;text-decoration:none;color:inherit;background:var(--surface);
+      border:1px solid var(--line);border-radius:12px;padding:1.25rem 1.35rem;
+      margin-bottom:1rem;transition:border-color .15s,transform .15s}
+.card:hover,.card:focus-visible{border-color:var(--rule);transform:translateY(-1px)}
+.card:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.card h2{font-family:var(--serif);font-weight:600;font-size:1.22rem;margin:0 0 .3rem}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.facts{display:flex;flex-wrap:wrap;gap:.3rem .9rem;margin-top:.8rem;
+       font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.facts b{color:var(--bronze);font-weight:600}
+.note{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line);
+      color:var(--muted);font-size:.88rem}
+.note p{margin:0 0 .7rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Gamelan Transcriptions</h1>
+  <p class="sub">Two pieces for semar pegulingan, transcribed in cipher notation with the
+     recording attached. Click any instrument line to hear that part alone, for exactly the
+     bars on that line.</p>
+
+  <a class="card" href="pendet/">
+    <h2>Pendet Pengaksama</h2>
+    <p>A pendet in ternary form, its central pengawak worked in norot style.
+       The pengecet arrives after two short bars that break the four-beat pattern.</p>
+    <div class="facts">
+      <span><b>4:04</b> long</span><span><b>117</b> bars</span>
+      <span><b>9</b> parts</span><span>pitch <b>+100¢</b></span>
+    </div>
+  </a>
+
+  <a class="card" href="cendrawasih/">
+    <h2>Cendrawasih</h2>
+    <p>The bird-of-paradise dance. Each section comes round three times in the recording,
+       so a pass selector picks which time through you hear.</p>
+    <div class="facts">
+      <span><b>11:01</b> long</span><span><b>203</b> bars</span>
+      <span><b>10</b> parts</span><span>pitch <b>+105¢</b></span>
+    </div>
+  </a>
+
+  <div class="note">
+    <p><b>Reading the notation.</b> Each page carries its own legend. In brief:
+       <span style="font-family:var(--mono)">1</span>=C♯ through
+       <span style="font-family:var(--mono)">7</span>=B,
+       <span style="font-family:var(--mono)">.</span> means a tone still ringing,
+       <span style="font-family:var(--mono)">x</span> a rim or kajar stroke, and
+       <span style="font-family:var(--mono)">W L P T</span> the wadon, lanang, kempur
+       and klentong.</p>
+    <p><b>Pitch.</b> Every stem is raised to sit with our own gamelan — measured against it
+       rather than guessed — so you can play along. Tempo is untouched.</p>
+    <p><b>Recordings</b> are our teacher's, shared for study within the group. Please don't
+       pass them on.</p>
+  </div>
+</main>
+</body>
+</html>

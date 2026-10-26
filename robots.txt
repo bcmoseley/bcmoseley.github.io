@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /gamelan/
+
+# Also blocks the recordings themselves, which a meta tag cannot reach:
+# robots meta tags only apply to HTML, so a direct link to an .mp4 would
+# otherwise be fair game for a crawler.
+Disallow: /gamelan/pendet/audio/
+Disallow: /gamelan/cendrawasih/audio/
