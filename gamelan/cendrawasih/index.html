@@ -87,6 +87,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .scroll{overflow-x:auto}
 .grid{display:grid;width:max-content;min-width:100%}
 .r{display:contents}
+/* range playback: the anchored line, and the hint about it */
+.r.anch .lab{box-shadow:inset 2px 0 0 var(--bronze)}
+.r.anch .nm,.r.anch .nmshort{color:var(--ink)}
+.rangehint{color:var(--bronze)}
+/* show / hide instrument lines */
+.r.hide{display:none}
+.parts{border:1px solid var(--line);border-radius:4px;background:var(--surface);
+  padding:.6rem .9rem;margin-bottom:.9rem}
+.parts summary{cursor:pointer;font-size:.82rem;color:var(--ink);font-weight:500}
+.parts summary span{color:var(--muted);font-weight:400}
+.partwrap{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.7rem}
+.chip{font-size:.72rem;white-space:nowrap;padding:.22rem .62rem;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--muted)}
+.chip:hover{border-color:var(--rule);color:var(--ink)}
+.chip[aria-pressed="true"]{border-color:var(--bronze);color:var(--bronze);background:var(--bronze-soft)}
+.chip[aria-pressed="false"]{opacity:.5}
+.partsets{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin-top:.7rem;
+  padding-top:.6rem;border-top:1px solid var(--line)}
+.partsets b{font-size:.72rem;color:var(--muted);font-weight:400;margin-right:.15rem}
+.pick{font-size:.72rem;white-space:nowrap;padding:.22rem .62rem;border:1px solid var(--line);
+  border-radius:999px;background:var(--surface);color:var(--muted)}
+.pick:hover{border-color:var(--bronze);color:var(--bronze)}
 .lab{position:sticky;left:0;z-index:2;background:var(--surface);
   border-right:1px solid var(--rule);display:flex;align-items:center;gap:.3rem;
   padding:0 .4rem 0 .15rem;font-size:.73rem;color:var(--muted);white-space:nowrap}
@@ -181,6 +203,12 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
     <button class="btn" id="calreset">Reset to my estimates</button>
     <span class="now" id="calstatus" style="min-width:0"></span>
   </div>
+</details>
+
+<details class="parts" id="parts">
+  <summary>Parts shown <span id="partcount"></span></summary>
+  <div class="partwrap" id="partchips"></div>
+  <div class="partsets" id="partsets"></div>
 </details>
 
 <div id="score"></div>
@@ -307,13 +335,14 @@ D.order.forEach(sname => {
       if (!(lab in blk.cells)) return;
       const r = document.createElement('div');
       r.className = 'r' + (lab.indexOf('Gong') === 0 ? ' gong' : '');
+      r.dataset.lab = lab;
       const l = document.createElement('div'); l.className = 'lab';
       const mix = (stem === 'all' || lab === 'Kajar') ? '<span class="mix">▲</span>' : '';
       l.innerHTML = '<span class="play">' + SVG + '</span><span class="nm">' + lab + '</span>'
         + '<span class="nmshort">' + (SHORT[lab] || lab) + '</span>' + mix;
-      l.onclick = () => play(stem, blk, r, null);
+      l.onclick = (ev) => playFrom(stem, blk, r, !!(ev && ev.shiftKey));
       l.tabIndex = 0; l.setAttribute('role','button'); l.setAttribute('aria-label','Play ' + lab);
-      l.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); l.onclick(); } };
+      l.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); l.onclick(e); } };
       r.appendChild(l);
       const txt = blk.cells[lab];
       for (let k = 0; k < ncol; k++){
@@ -400,4 +429,114 @@ document.getElementById('loop').onclick = function(){ looping = !looping; this.s
 document.getElementById('stop').onclick = stop;
 addEventListener('keydown', e => { if (e.key === 'Escape') stop();
   if (e.key === ' ' && e.target === document.body) { e.preventDefault(); stop(); } });
+
+/* ---------- show / hide instrument lines ---------- */
+(function(){
+  const PROWS = D.rows.map(r => r[0]).filter((v,i,a) => a.indexOf(v) === i);
+  const PKEY = 'cendrawasih.parts.v1';
+  const chipBox = document.getElementById('partchips');
+  const setBox  = document.getElementById('partsets');
+  const countEl = document.getElementById('partcount');
+  const panel   = document.getElementById('parts');
+  let hidden = new Set();
+  try { const v = localStorage.getItem(PKEY);
+        if (v) hidden = new Set(JSON.parse(v).filter(x => PROWS.indexOf(x) >= 0)); } catch(e){}
+
+  const chips = {};
+  function apply(save){
+    document.querySelectorAll('.r[data-lab]').forEach(r =>
+      r.classList.toggle('hide', hidden.has(r.dataset.lab)));
+    PROWS.forEach(l => chips[l].setAttribute('aria-pressed', hidden.has(l) ? 'false' : 'true'));
+    const shown = PROWS.length - hidden.size;
+    countEl.textContent = hidden.size ? '\u2014 ' + shown + ' of ' + PROWS.length
+                                      : '\u2014 all ' + PROWS.length;
+    if (save !== false) { try { localStorage.setItem(PKEY, JSON.stringify([...hidden])); } catch(e){} }
+  }
+  PROWS.forEach(l => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button';
+    b.textContent = (typeof SHORT !== 'undefined' && SHORT[l]) ? SHORT[l] : l;
+    b.title = l;
+    b.onclick = () => { if (hidden.has(l)) hidden.delete(l); else hidden.add(l); apply(); };
+    chipBox.appendChild(b); chips[l] = b;
+  });
+  const only = pred => { hidden = new Set(PROWS.filter(l => !pred(l))); apply(); };
+  const SETS = [
+    ['All',    function(){ return true; }],
+    ['Pokok',  function(l){ return l === 'Jegog' || l === 'Calung'; }],
+    ['Gangsa', function(l){ return l.indexOf('Pemade') === 0; }],
+    ['Reyong', function(l){ return l.indexOf('Reyong') >= 0; }],
+    ['Gongs',  function(l){ return l === 'Kajar' || l.indexOf('Gong') === 0
+                                   || l.indexOf('Kendang') === 0; }]
+  ];
+  const lbl = document.createElement('b'); lbl.textContent = 'quick picks';
+  setBox.appendChild(lbl);
+  SETS.forEach(function(s){
+    const b = document.createElement('button');
+    b.className = 'pick'; b.type = 'button'; b.textContent = s[0];
+    b.onclick = function(){ only(s[1]); };
+    setBox.appendChild(b);
+  });
+  if (hidden.size) panel.open = true;
+  apply(false);
+})();
+
+/* ---------- click, then shift-click, to play a longer stretch ---------- */
+(function(){
+  const DAT = D;
+  // each block's section (some pages mark only the first block of a section)
+  const SECOF = (function(){ const o=[]; let s=null;
+    DAT.blocks.forEach(b => { if (b.sec) s = b.sec; o.push(s); }); return o; })();
+  const cards = () => [...document.querySelectorAll('.blk')];
+  const barsOf = blk => blk.label;
+  let anchor = null;                      // { bi, lab }
+
+  function setAnchor(bi, lab, rowEl){
+    document.querySelectorAll('.r.anch').forEach(e => e.classList.remove('anch'));
+    anchor = { bi: bi, lab: lab };
+    if (rowEl) rowEl.classList.add('anch');
+  }
+
+  function playRange(stem, lab, a, b){
+    const cs = cards();
+    const t0 = blockSpan(DAT.blocks[a], pass)[0], t1 = blockSpan(DAT.blocks[b], pass)[1];
+    const ba = barsOf(DAT.blocks[a]), bb = barsOf(DAT.blocks[b]);
+    const name = (typeof SHORT !== 'undefined' && SHORT[lab]) ? SHORT[lab] : lab;
+    const n = b - a + 1;
+    playRaw(stem, t0, t1, name + ' \u00b7 bars ' + ba[0] + '\u2013' + bb[bb.length-1] + ' \u00b7 ' + n + ' lines', null);
+    // highlight that part across every block in the range (after playRaw, which clears)
+    for (let i = a; i <= b; i++){
+      const r = cs[i] && cs[i].querySelector('.r[data-lab="' + lab.replace(/"/g,'\\"') + '"]');
+      if (r) r.classList.add('on');
+    }
+    if (typeof cur !== 'undefined' && cur) cur.range = lab + ':' + a + '-' + b;
+    return cs;
+  }
+
+  window.playFrom = function(stem, blk, rowEl, extend){
+    const cs = cards();
+    const bi = cs.indexOf(rowEl.closest('.blk'));
+    const lab = rowEl.dataset.lab;
+    if (bi < 0) { play(stem, blk, rowEl, null); return; }
+    if (extend && anchor && anchor.lab === lab && anchor.bi !== bi){
+      let a = Math.min(anchor.bi, bi), b = Math.max(anchor.bi, bi);
+      const sec = SECOF[a];                       // keep the range in one section
+      while (b > a && SECOF[b] !== sec) b--;
+      // toggle off only when the same line is shift-clicked again, not when a
+      // farther one happens to clamp back to the stretch already playing
+      const tag = lab + ':' + anchor.bi + '>' + bi;
+      if (typeof cur !== 'undefined' && cur && cur.click === tag) { stop(); return; }
+      playRange(stem, lab, a, b);
+      if (typeof cur !== 'undefined' && cur) cur.click = tag;
+      return;
+    }
+    setAnchor(bi, lab, rowEl);
+    play(stem, blk, rowEl, null);
+  };
+
+  // say so, once, where the other playback hints live
+  const hint = document.querySelector('.now.hint');
+  if (hint) hint.innerHTML = hint.textContent.replace(/\s*$/,'')
+    + ' <span class="rangehint">Shift-click a later line of the same part to play the whole stretch.</span>';
+})();
 </script>
