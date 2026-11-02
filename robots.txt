@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /gamelan/
+Disallow: /tool-library/
 
 # Also blocks the recordings themselves, which a meta tag cannot reach:
 # robots meta tags only apply to HTML, so a direct link to an .mp4 would

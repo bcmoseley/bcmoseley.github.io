@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Tool Library Pricing Model</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: two-column workbench — assumptions on the left, results on the right; sensitivity grid and notes full width below. */
+:root{
+  --bg:#eef2f3; --panel:#ffffff; --ink:#15262d; --muted:#56686f; --line:#d3dcdf;
+  --teal:#1f7f86; --teal-soft:#d6ecec; --yellow:#f2b705; --yellow-soft:#fdf0c4;
+  --belt:#1f7f86; --box:#e08a1e; --wb:#6a5acd; --pass:#c9a100;
+  --good:#2e8b57; --warn:#c98a00; --bad:#c0392b;
+  --cell-bad:#f6d8d4; --cell-warn:#fbeec8; --cell-ok:#dcefe2; --cell-good:#b9e2c7;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10191d; --panel:#172429; --ink:#e6eef0; --muted:#9aaeb4; --line:#2a3b41;
+  --teal:#4fb6bd; --teal-soft:#1d3a3d; --yellow:#f5c43a; --yellow-soft:#3a3214;
+  --belt:#4fb6bd; --box:#f0a14a; --wb:#9b8cf0; --pass:#e8c74a;
+  --good:#5cc489; --warn:#e7b64a; --bad:#ec7a6c;
+  --cell-bad:#4a2723; --cell-warn:#43391b; --cell-ok:#1f3a2a; --cell-good:#24523a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10191d; --panel:#172429; --ink:#e6eef0; --muted:#9aaeb4; --line:#2a3b41;
+  --teal:#4fb6bd; --teal-soft:#1d3a3d; --yellow:#f5c43a; --yellow-soft:#3a3214;
+  --belt:#4fb6bd; --box:#f0a14a; --wb:#9b8cf0; --pass:#e8c74a;
+  --good:#5cc489; --warn:#e7b64a; --bad:#ec7a6c;
+  --cell-bad:#4a2723; --cell-warn:#43391b; --cell-ok:#1f3a2a; --cell-good:#24523a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:22px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:18px;font-weight:700}
+h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch}
+header{display:grid;gap:10px}
+.tag{font-family:var(--mono);font-size:12px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase}
+.modes{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel);width:max-content;max-width:100%}
+.modes button{border:none;border-radius:0;padding:9px 16px;font-size:14px}
+.modes button+button{border-left:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:22px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:18px;min-width:0}
+.stack{display:grid;gap:14px}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 13px var(--body);color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--teal);color:var(--teal)}
+button.on{background:var(--teal);border-color:var(--teal);color:var(--panel)}
+button.on:hover{color:var(--panel)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.tier{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.tier-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tier-name{font-family:var(--display);font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+.small{font-size:13px;color:var(--muted)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:12px;align-items:center}
+.row label{font-size:14px}
+.row .hint{display:block;font-size:12px;color:var(--muted)}
+.check{display:flex;gap:10px;align-items:center;font-size:15px;font-weight:600}
+.check input{width:18px;height:18px;accent-color:var(--teal)}
+input[type=number]{width:100%;font:500 15px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=number]:disabled{opacity:.5}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.slider{display:grid;gap:2px}
+.slider-top{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.slider-top output{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.headline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:520px){.headline{grid-template-columns:1fr}}
+.stat{display:grid;gap:2px}
+.stat .v{font:700 28px var(--display);font-variant-numeric:tabular-nums}
+.stat .l{font-size:13px;color:var(--muted)}
+.bar-area{display:grid;gap:10px}
+.bar-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:8px}
+.track{position:relative;height:30px;background:var(--bg);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex}
+.seg{height:100%;transition:width .3s ease}
+.marker{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td{font-variant-numeric:tabular-nums}
+tfoot td{font-weight:700;border-bottom:none}
+.callout{background:var(--yellow-soft);border-radius:8px;padding:12px 14px;font-size:14px}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+.sens td{text-align:center;font-family:var(--mono);font-size:13px;border:1px solid var(--panel)}
+.sens th{text-align:center}
+.sens td.rowhead{text-align:right;font-family:var(--mono);background:transparent;color:var(--muted);border:none}
+.sens td.cur{outline:2px solid var(--ink);outline-offset:-2px;font-weight:600}
+.notes{display:grid;gap:8px;font-size:14px;max-width:80ch;margin:0;padding-left:20px}
+@media (prefers-reduced-motion:reduce){.seg{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="tag">Membership Working Group · Session #2–3 prep</div>
+    <h1>Tool Library Pricing Model</h1>
+    <p class="lede">Compare membership structures and see projected 2027 membership revenue against Tool Borrowing Program costs. Starting figures come from the 9/22/2026 roster and the Session #1 deck. The member-response settings are guesses for the group to debate, not measured values.</p>
+    <div class="modes" role="group" aria-label="Membership structure">
+      <button type="button" data-mode="tiers">Current tiers</button>
+      <button type="button" data-mode="sliding">Sliding scale</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-label="Assumptions">
+      <!-- Tier mode -->
+      <div class="stack" id="tierInputs">
+        <div style="display:grid;gap:10px">
+          <h2>Tier prices</h2>
+          <div class="presets" id="presets"></div>
+        </div>
+        <div id="tiers" class="stack"></div>
+        <div class="tier">
+          <h3>Moving between tiers</h3>
+          <div class="row"><label for="down">Upper-tier leavers who downgrade instead (%)<span class="hint">Tool Box → Tool Belt, Wheelbarrow → Tool Box</span></label><input type="number" id="down" step="5" min="0" max="100"></div>
+          <div class="row"><label for="up">Tool Belt members who move up to Tool Box<span class="hint">~100 borrow in 5+ months a year; ~300 in 3+ months</span></label><input type="number" id="up" step="10" min="0"></div>
+          <div class="presets" id="upPresets"><button type="button" data-v="0">No upgrades</button><button type="button" data-v="100">~100 · 5+ month borrowers</button><button type="button" data-v="300">~300 · 3+ month borrowers</button></div>
+        </div>
+      </div>
+
+      <!-- Sliding mode -->
+      <div class="stack" id="slideInputs" hidden>
+        <div style="display:grid;gap:10px">
+          <h2>Sliding scale</h2>
+          <p class="small">Everyone gets the same borrowing rights and chooses what to pay. Members fall into three groups: those paying the floor, the suggested amount, or a sustaining amount.</p>
+          <div class="presets" id="slPresets"></div>
+        </div>
+        <div class="tier">
+          <h3>Amounts ($/year)</h3>
+          <div class="row"><label for="slFloor">Floor<span class="hint">Lowest amount offered; scholarships cover $0</span></label><input type="number" id="slFloor" step="5" min="0"></div>
+          <div class="row"><label for="slSug">Suggested<span class="hint">The amount most people are asked to pay</span></label><input type="number" id="slSug" step="5" min="0"></div>
+          <div class="row"><label for="slSus">Sustaining<span class="hint">Pay-it-forward level; the amount above suggested funds scholarships</span></label><input type="number" id="slSus" step="5" min="0"></div>
+        </div>
+        <div class="tier">
+          <h3>Who pays what</h3>
+          <div class="row"><label for="slShFloor">Members paying the floor (%)</label><input type="number" id="slShFloor" step="5" min="0" max="100"></div>
+          <div class="row"><label for="slShSus">Members paying sustaining (%)<span class="hint">About 5% choose SIF today, at double the price</span></label><input type="number" id="slShSus" step="1" min="0" max="100"></div>
+          <p class="small" id="slMix"></p>
+          <div class="slider">
+            <div class="slider-top"><label for="slE">Members lost per 10% rise in average paid</label><output id="slEo"></output></div>
+            <input type="range" id="slE" min="0" max="1" step="0.05">
+          </div>
+        </div>
+      </div>
+
+      <!-- Both modes -->
+      <div class="tier">
+        <label class="check"><input type="checkbox" id="pass">Add a project pass</label>
+        <p class="small">A short-term option like Denver's $40 one-week checkout. About half of Tool Belt borrowers only borrow in one month a year.</p>
+        <div class="row"><label for="passPrice">Pass price ($)</label><input type="number" id="passPrice" step="5" min="0"></div>
+        <div class="row"><label for="passSwitch">Annual members who switch to passes (%)<span class="hint">Taken from Tool Belt in tier mode; from floor and suggested payers on a sliding scale</span></label><input type="number" id="passSwitch" step="5" min="0" max="100"></div>
+        <div class="row"><label for="passNew">New people who buy passes<span class="hint">People who wouldn't buy an annual membership</span></label><input type="number" id="passNew" step="25" min="0"></div>
+        <div class="row"><label for="passPer">Passes per pass user per year</label><input type="number" id="passPer" step="0.1" min="0"></div>
+      </div>
+
+      <div class="tier">
+        <h3>Whole program</h3>
+        <div class="row"><label for="growth">Roster growth before price effects (%)<span class="hint">6.8% reproduces the staff $100k projection at current prices</span></label><input type="number" id="growth" step="0.5"></div>
+        <div class="row"><label for="cost">2027 program costs ($)<span class="hint">From the deck; question whether this is low</span></label><input type="number" id="cost" step="1000"></div>
+        <div class="row"><label for="schol">Scholarship memberships funded<span class="hint">Free memberships paid from the SIF; 76 in 2025</span></label><input type="number" id="schol" step="5" min="0"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Results">
+      <div class="headline">
+        <div class="stat"><span class="v" id="sCov">–</span><span class="l">of program costs covered</span></div>
+        <div class="stat"><span class="v" id="sRev">–</span><span class="l">membership revenue</span></div>
+        <div class="stat"><span class="v" id="sGap">–</span><span class="l">gap to cover from other sources</span></div>
+      </div>
+
+      <div class="bar-area">
+        <div class="bar-label"><span>Revenue by group vs. program costs</span><span class="num" id="costLbl"></span></div>
+        <div class="track" id="track" aria-hidden="true"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Group</th><th>Price</th><th>Members today</th><th>Members 2027</th><th>Change</th><th>Revenue</th></tr></thead>
+          <tbody id="tbody"></tbody>
+          <tfoot><tr><td>Total</td><td id="fAvg"></td><td id="fToday"></td><td id="fNew"></td><td id="fChg"></td><td id="fRev"></td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="callout" id="breakeven"></div>
+
+      <div class="tier" style="border-top:none;padding-top:0">
+        <h3>Scholarship fund (SIF)</h3>
+        <div class="scroll"><table>
+          <tbody>
+            <tr><td>Available now</td><td class="num">$24,240</td></tr>
+            <tr><td id="fundInLbl"></td><td class="num" id="fundIn"></td></tr>
+            <tr><td id="fundOutLbl"></td><td class="num" id="fundOut"></td></tr>
+            <tr><td><strong>Balance at end of 2027</strong></td><td class="num" id="fundEnd"></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-label="Sensitivity">
+    <div style="display:grid;gap:6px">
+      <h2>How much does the member-response guess matter?</h2>
+      <p class="small" id="sensNote"></p>
+    </div>
+    <div class="scroll"><table class="sens" id="sens"></table></div>
+  </section>
+
+  <section class="panel" aria-label="How the model works">
+    <h2>How the model works</h2>
+    <ul class="notes">
+      <li><strong>Starting point.</strong> Both structures start from the 9/22/2026 roster of 2,494 paying members, grown by the roster growth rate.</li>
+      <li><strong>Member response.</strong> A setting of 4% means each 10% increase loses 4% of members, combining fewer sign-ups and fewer renewals. In tier mode it applies to each tier's price. On a sliding scale it applies to the rise in the average amount paid compared with today's $37.54. The effect is a straight line, which gets less reliable for large changes.</li>
+      <li><strong>Tier mode.</strong> Part of the members lost from Tool Box and Wheelbarrow move down one tier. Upgrading members come out of Tool Belt and pay the Tool Box price. SIF members pay double; their full payment counts as revenue, as in the deck, and the extra half goes into the scholarship fund.</li>
+      <li><strong>Sliding scale.</strong> Each member pays the floor, the suggested amount, or the sustaining amount. Peers vary widely: Chicago's pay-what-you-can averages about $35 and Station North's sliding scale about $75, so the suggested amount and how it's presented matter a lot.</li>
+      <li><strong>Project pass.</strong> Members who switch stop paying their annual amount and buy passes instead. New pass buyers add revenue without replacing anyone.</li>
+      <li><strong>Scholarships</strong> count as members but add no revenue. Their cost is drawn from the SIF at the Tool Belt price, or at the floor on a sliding scale.</li>
+      <li><strong>Costs are fixed.</strong> More or fewer members don't change program costs here. In practice repairs and waitlist pressure rise with use.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const TIERS=[
+  {name:'Tool Belt',color:'var(--belt)',limit:'5 tools per visit',price:30,reg:2142,sif:112,e:0.4},
+  {name:'Tool Box',color:'var(--box)',limit:'25 tools per visit',price:75,reg:182,sif:11,e:0.3},
+  {name:'Wheelbarrow',color:'var(--wb)',limit:'50 tools per visit',price:150,reg:45,sif:2,e:0.2}
+];
+const TODAY_REV=93630, FUND=24240, TODAY_AVG=37.54;
+const TODAY_N=TIERS.reduce((a,t)=>a+t.reg+t.sif,0);
+const PRESETS=[
+  {label:'Current prices',p:[30,75,150]},
+  {label:'Small increase',p:[40,90,175]},
+  {label:'Larger increase',p:[50,100,200]},
+  {label:'Break-even attempt',p:[60,120,240]}
+];
+const SL_PRESETS=[
+  {label:'Low anchor · like Chicago',v:{slFloor:10,slSug:40,slSus:100,slShFloor:40,slShSus:10}},
+  {label:'Middle',v:{slFloor:20,slSug:55,slSus:120,slShFloor:30,slShSus:10}},
+  {label:'High anchor · like Station North',v:{slFloor:25,slSug:75,slSus:175,slShFloor:20,slShSus:15}}
+];
+const S={mode:'tiers',prices:[30,75,150],elast:TIERS.map(t=>t.e),growth:6.8,down:50,cost:167983,schol:76,up:0,
+  slFloor:20,slSug:55,slSus:120,slShFloor:30,slShSus:10,slE:0.3,
+  pass:false,passPrice:20,passSwitch:10,passNew:150,passPer:1.3};
+
+const $=id=>document.getElementById(id);
+const money=n=>(n<0?'−$':'$')+Math.round(Math.abs(n)).toLocaleString('en-US');
+const int=n=>Math.round(n).toLocaleString('en-US');
+const pct=n=>Math.round(n*100)+'%';
+
+function model(s){
+  const g=1+s.growth/100, rows=[];
+  let fundIn=0, scholPrice;
+  const sw=s.pass?Math.min(1,s.passSwitch/100):0;
+  let switchers=0;
+  if(s.mode==='tiers'){
+    const d=s.down/100;
+    const r=TIERS.map((t,i)=>{
+      const p=s.prices[i], factor=Math.max(0,1-s.elast[i]*(p/t.price-1));
+      return {p,reg:t.reg*g*factor,sif:t.sif*g*factor,lost:Math.max(0,(t.reg+t.sif)*g*(1-factor)),inflow:0};
+    });
+    r[0].inflow=r[1].lost*d; r[1].inflow=r[2].lost*d;
+    const up=Math.max(0,Math.min(s.up||0,r[0].reg));
+    r[0].reg-=up; r[1].inflow+=up;
+    const total=r.reduce((a,x)=>a+x.reg+x.sif+x.inflow,0);
+    switchers=Math.min(sw*total,r[0].reg); r[0].reg-=switchers;
+    r.forEach((x,i)=>{
+      const members=x.reg+x.sif+x.inflow;
+      rows.push({name:TIERS[i].name,color:TIERS[i].color,price:'$'+x.p,today:TIERS[i].reg+TIERS[i].sif,members,rev:(x.reg+x.inflow)*x.p+x.sif*x.p*2});
+      fundIn+=x.sif*x.p;
+    });
+    scholPrice=s.prices[0];
+  } else {
+    const fF=Math.min(1,s.slShFloor/100), fS=Math.min(1-fF,s.slShSus/100), fM=Math.max(0,1-fF-fS);
+    const avg=fF*s.slFloor+fM*s.slSug+fS*s.slSus;
+    const base=TODAY_N*g*Math.max(0,1-s.slE*(avg/TODAY_AVG-1));
+    let nF=base*fF, nM=base*fM, nS=base*fS;
+    switchers=sw*(nF+nM); nF*=(1-sw); nM*=(1-sw);
+    rows.push({name:'Floor',color:'var(--box)',price:'$'+s.slFloor,today:null,members:nF,rev:nF*s.slFloor});
+    rows.push({name:'Suggested',color:'var(--belt)',price:'$'+s.slSug,today:null,members:nM,rev:nM*s.slSug});
+    rows.push({name:'Sustaining',color:'var(--wb)',price:'$'+s.slSus,today:null,members:nS,rev:nS*s.slSus});
+    fundIn=nS*Math.max(0,s.slSus-s.slSug);
+    scholPrice=s.slFloor;
+  }
+  if(s.pass){
+    const users=switchers+Math.max(0,s.passNew);
+    rows.push({name:'Project pass',color:'var(--pass)',price:'$'+s.passPrice,today:null,members:users,rev:users*s.passPer*s.passPrice,pass:true});
+  }
+  const rev=rows.reduce((a,x)=>a+x.rev,0), members=rows.reduce((a,x)=>a+x.members,0);
+  const annual=rows.filter(x=>!x.pass), annualN=annual.reduce((a,x)=>a+x.members,0);
+  const scholCost=s.schol*scholPrice;
+  return {rows,rev,members,avgAnnual:annualN?annual.reduce((a,x)=>a+x.rev,0)/annualN:0,cov:rev/s.cost,gap:s.cost-rev,fundIn,scholCost,fundEnd:FUND+fundIn-scholCost};
+}
+
+function breakEven(s){
+  let best={cov:0,p:0}, hit=null;
+  for(let p=10;p<=300;p+=0.5){
+    const t=s.mode==='tiers'?{...s,prices:[p,s.prices[1],s.prices[2]]}:{...s,slSug:p,slSus:Math.max(s.slSus,p)};
+    const m=model(t);
+    if(m.cov>best.cov) best={cov:m.cov,p};
+    if(hit===null&&m.cov>=1) hit={p,m};
+  }
+  return {hit,best};
+}
+
+function buildInputs(){
+  document.querySelector('.modes').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.mode=b.dataset.mode;render();};
+  $('presets').innerHTML=PRESETS.map((p,i)=>`<button type="button" data-i="${i}">${p.label}<span class="small"> · $${p.p.join(' / $')}</span></button>`).join('');
+  $('presets').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.prices=[...PRESETS[b.dataset.i].p];syncInputs();render();};
+  $('slPresets').innerHTML=SL_PRESETS.map((p,i)=>`<button type="button" data-i="${i}">${p.label}</button>`).join('');
+  $('slPresets').onclick=e=>{const b=e.target.closest('button');if(!b)return;Object.assign(S,SL_PRESETS[b.dataset.i].v);syncInputs();render();};
+  $('upPresets').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.up=+b.dataset.v;syncInputs();render();};
+  $('tiers').innerHTML=TIERS.map((t,i)=>`
+    <div class="tier">
+      <div class="tier-head"><span class="tier-name"><i class="dot" style="background:${t.color}"></i>${t.name}</span><span class="small">now $${t.price} · ${t.limit} · ${int(t.reg+t.sif)} members</span></div>
+      <div class="row"><label for="p${i}">New price ($/year)<span class="hint">SIF price is double: <span id="sifp${i}"></span></span></label><input type="number" id="p${i}" min="0" step="5"></div>
+      <div class="slider">
+        <div class="slider-top"><label for="e${i}">Members lost per 10% increase</label><output id="eo${i}"></output></div>
+        <input type="range" id="e${i}" min="0" max="1" step="0.05">
+      </div>
+    </div>`).join('');
+  TIERS.forEach((t,i)=>{
+    $('p'+i).oninput=e=>{S.prices[i]=Math.max(0,+e.target.value||0);render();};
+    $('e'+i).oninput=e=>{S.elast[i]=+e.target.value;render();};
+  });
+  ['growth','down','cost','schol','up','slFloor','slSug','slSus','slShFloor','slShSus','slE','passPrice','passSwitch','passNew','passPer'].forEach(k=>{
+    $(k).oninput=e=>{S[k]=+e.target.value||0;render();};
+  });
+  $('pass').onchange=e=>{S.pass=e.target.checked;render();};
+}
+function syncInputs(){
+  TIERS.forEach((t,i)=>{$('p'+i).value=S.prices[i];$('e'+i).value=S.elast[i];});
+  ['growth','down','cost','schol','up','slFloor','slSug','slSus','slShFloor','slShSus','slE','passPrice','passSwitch','passNew','passPer'].forEach(k=>$(k).value=S[k]);
+  $('pass').checked=S.pass;
+}
+const perTen=e=>(e*10).toFixed(1).replace('.0','')+'%';
+
+function render(){
+  const tiers=S.mode==='tiers';
+  document.querySelectorAll('.modes button').forEach(b=>{const on=b.dataset.mode===S.mode;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
+  $('tierInputs').hidden=!tiers; $('slideInputs').hidden=tiers;
+  ['passPrice','passSwitch','passNew','passPer'].forEach(k=>$(k).disabled=!S.pass);
+  TIERS.forEach((t,i)=>{$('eo'+i).textContent=perTen(S.elast[i]);$('sifp'+i).textContent='$'+S.prices[i]*2;});
+  $('slEo').textContent=perTen(S.slE);
+  document.querySelectorAll('#upPresets button').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.up));
+  document.querySelectorAll('#presets button').forEach(b=>{const p=PRESETS[b.dataset.i].p;b.classList.toggle('on',p.every((v,i)=>v===S.prices[i]));});
+  document.querySelectorAll('#slPresets button').forEach(b=>{const v=SL_PRESETS[b.dataset.i].v;b.classList.toggle('on',Object.keys(v).every(k=>S[k]===v[k]));});
+
+  const m=model(S);
+  const mid=Math.max(0,100-S.slShFloor-S.slShSus);
+  $('slMix').textContent=`${mid}% pay the suggested amount. Average annual payment: $${m.avgAnnual.toFixed(2)} (today $37.54).`;
+
+  const cov=$('sCov');cov.textContent=pct(m.cov);cov.style.color=m.cov>=1?'var(--good)':m.cov>=0.75?'var(--warn)':'var(--bad)';
+  $('sRev').textContent=money(m.rev);
+  $('sGap').textContent=m.gap>0?money(m.gap):'None';
+  $('costLbl').textContent='Costs '+money(S.cost);
+
+  const scale=Math.max(S.cost,m.rev);
+  $('track').innerHTML=m.rows.map(x=>`<div class="seg" style="width:${x.rev/scale*100}%;background:${x.color}"></div>`).join('')+
+    `<div class="marker" style="left:${Math.min(99.6,TODAY_REV/scale*100)}%"></div>`;
+  $('legend').innerHTML=m.rows.map(x=>`<span><i class="dot" style="background:${x.color}"></i>${x.name}</span>`).join('')+
+    `<span><i class="dot" style="background:var(--ink);width:2px"></i>Today's roster revenue</span>`;
+
+  $('tbody').innerHTML=m.rows.map(x=>{
+    const ch=x.today==null?null:x.members-x.today;
+    return `<tr><td><i class="dot" style="background:${x.color}"></i> ${x.name}</td><td>${x.price}${x.pass?' each':''}</td><td>${x.today==null?'—':int(x.today)}</td><td>${int(x.members)}</td><td class="${ch==null?'':ch<0?'neg':'pos'}">${ch==null?'—':(ch<0?'−':'+')+int(Math.abs(ch))}</td><td>${money(x.rev)}</td></tr>`;
+  }).join('')+`<tr><td>Scholarships</td><td>$0</td><td class="small">76 in 2025</td><td>${int(S.schol)}</td><td></td><td>$0</td></tr>`;
+  const total=m.members+S.schol, tc=total-TODAY_N;
+  $('fAvg').textContent='avg $'+m.avgAnnual.toFixed(0);
+  $('fToday').textContent=int(TODAY_N);$('fNew').textContent=int(total);
+  $('fChg').textContent=(tc<0?'−':'+')+int(Math.abs(tc));$('fChg').className=tc<0?'neg':'pos';
+  $('fRev').textContent=money(m.rev);
+
+  const be=breakEven(S), what=tiers?'Tool Belt price':'suggested amount';
+  $('breakeven').innerHTML=be.hit
+    ? `With these assumptions, a <strong>${what} of $${be.hit.p.toFixed(be.hit.p%1?2:0)}</strong> would cover program costs, leaving about ${int(be.hit.m.members)} members and pass users.`
+    : `With these assumptions, <strong>no ${what} covers program costs.</strong> Revenue peaks at about ${pct(be.best.cov)} of costs at a ${what} near $${Math.round(be.best.p)}; above that, members lost outweigh the higher price.`;
+
+  $('fundInLbl').textContent=tiers?"Added by SIF members' extra half in 2027":'Added by sustaining members above the suggested amount';
+  $('fundOutLbl').textContent=tiers?'Spent on scholarships (at the Tool Belt price)':'Spent on scholarships (at the floor amount)';
+  $('fundIn').textContent=money(m.fundIn);
+  $('fundOut').textContent=money(-m.scholCost);
+  const fe=$('fundEnd');fe.textContent=money(m.fundEnd);fe.className='num '+(m.fundEnd<0?'neg':'');
+
+  const es=[0,0.1,0.2,0.3,0.4,0.5,0.6];
+  const prices=tiers?[30,35,40,45,50,55,60,65,70]:[35,40,45,50,55,60,65,70,75,80];
+  const cur=tiers?S.prices[0]:S.slSug, curE=tiers?S.elast[0]:S.slE;
+  $('sensNote').textContent=tiers
+    ? 'Share of program costs covered for each Tool Belt price (rows) and how many Tool Belt members leave per 10% increase (columns). Other settings stay as set. The outlined cell is your current scenario.'
+    : 'Share of program costs covered for each suggested amount (rows) and how many members leave per 10% rise in the average amount paid (columns). Floor, sustaining and the mix of payers stay as set. The outlined cell is your current scenario.';
+  let h=`<thead><tr><th style="text-align:right">${tiers?'Tool Belt price':'Suggested amount'}</th>`+es.map(e=>`<th>${(e*10).toFixed(0)}% lost<br><span style="font-weight:400;text-transform:none;letter-spacing:0">per 10% increase</span></th>`).join('')+'</tr></thead><tbody>';
+  prices.forEach(p=>{
+    h+=`<tr><td class="rowhead">$${p}</td>`+es.map(e=>{
+      const t=tiers?{...S,prices:[p,S.prices[1],S.prices[2]],elast:[e,S.elast[1],S.elast[2]]}:{...S,slSug:p,slSus:Math.max(S.slSus,p),slE:e};
+      const c=model(t).cov;
+      const bg=c>=1?'var(--cell-good)':c>=0.8?'var(--cell-ok)':c>=0.65?'var(--cell-warn)':'var(--cell-bad)';
+      const isCur=Math.abs(p-cur)<0.01&&Math.abs(e-curE)<0.001?' cur':'';
+      return `<td class="${isCur}" style="background:${bg}">${pct(c)}</td>`;
+    }).join('')+'</tr>';
+  });
+  $('sens').innerHTML=h+'</tbody>';
+}
+buildInputs();syncInputs();render();
+</script>
+</body>
+</html>
