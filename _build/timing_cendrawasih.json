@@ -1,0 +1,81 @@
+{
+ "_comment": [
+  "Measured timing for the Cendrawasih page. These do NOT come from the",
+  "spreadsheet. The anchors were measured against the recording - A, B and C",
+  "from Brian, the outro from Brian, b3 and the ending from gong detection.",
+  "The sheet's own section timestamps are approximate and disagree.",
+  "",
+  "'sections' records how long each section is and how many times it is played.",
+  "The build compares the sheet against this and stops if it differs, because a",
+  "section changing length moves the knots below and that has to be re-measured.",
+  "",
+  "knotbars: played-bar positions of the piecewise-linear map's joints.",
+  "'start:<section>' resolves to that section's first played bar; 'NB' is the end."
+ ],
+ "DUR": 660.6,
+ "anch": {
+  "b3": 7.197,
+  "A": 36.066,
+  "B": 215.825,
+  "C": 426.404,
+  "O": 580.466,
+  "end": 658.39
+ },
+ "rB": 3.205,
+ "knotbars": [
+  0,
+  11,
+  67,
+  127,
+  "start:C Section (Pengecet)",
+  "start:Outro (Peralihan)",
+  "NB"
+ ],
+ "sections": [
+  {
+   "name": "Introduction (Kawitan)",
+   "bars": 11,
+   "rep": 1
+  },
+  {
+   "name": "Section A (Pepeson)",
+   "bars": 17,
+   "rep": 3
+  },
+  {
+   "name": "Transition (Peralihan) 1",
+   "bars": 5,
+   "rep": 1
+  },
+  {
+   "name": "B section (Pengawak)",
+   "bars": 20,
+   "rep": 3
+  },
+  {
+   "name": "Transition (Peralihan) 2",
+   "bars": 6,
+   "rep": 1
+  },
+  {
+   "name": "C Section (Pengecet)",
+   "bars": 16,
+   "rep": 3
+  },
+  {
+   "name": "Outro (Peralihan)",
+   "bars": 3,
+   "rep": 1
+  },
+  {
+   "name": "Pekaad (Bapang Style)",
+   "bars": 16,
+   "rep": 1
+  },
+  {
+   "name": "Penyuud",
+   "bars": 5,
+   "rep": 1
+  }
+ ]
+}
