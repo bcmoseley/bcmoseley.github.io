@@ -165,14 +165,27 @@ def main():
         print()
         sys.exit(1)
 
-    # played-bar index where each section starts, and the knots
+    # played-bar index where each section starts
     start, k = {}, 0
     for s in T['sections']:
         start[s['name']] = k
         k += s['bars'] * s['rep']
     NB = k
-    knots = [NB if x == 'NB' else (start[x[6:]] if str(x).startswith('start:') else x)
-             for x in T['knotbars']]
+    knots = T['knots']
+    if knots[-1][1] != NB:
+        fail(f"the last timing knot is at bar {knots[-1][1]} but the piece is now "
+             f"{NB} played bars long. The knots need re-measuring. Ask Claude.")
+    for a, b2 in zip(knots, knots[1:]):
+        if b2[1] <= a[1]:
+            fail(f"timing knots {a[0]!r} and {b2[0]!r} are out of order "
+                 f"(bars {a[1]} then {b2[1]}).")
+
+    if problems:
+        print('\nSTOPPED. Nothing was written.\n')
+        for p2 in problems:
+            print('  * ' + p2)
+        print()
+        sys.exit(1)
 
     page = open(PAGE, encoding='utf-8').read()
     m = re.search(r'^const D = (\{.*\});$', page, re.M)
@@ -214,8 +227,10 @@ def main():
     D['order'] = secnames
     D['rep'] = {s['name']: s['rep'] for s in T['sections']}
     D['nb'] = {s['name']: s['bars'] for s in T['sections']}
-    D['start'], D['NB'], D['knotbars'] = start, NB, knots
-    D['DUR'], D['anch'], D['rB'] = T['DUR'], T['anch'], T['rB']
+    D['start'], D['NB'], D['knots'] = start, NB, knots
+    D['DUR'] = T['DUR']
+    for k2 in ('anch', 'rB', 'knotbars'):
+        D.pop(k2, None)
 
     new_page = page[:m.start()] + 'const D = ' + json.dumps(D, separators=(',', ':')) + ';' + page[m.end():]
     if new_page == page:

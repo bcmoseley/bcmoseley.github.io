@@ -1,36 +1,19 @@
 {
  "_comment": [
   "Measured timing for the Cendrawasih page. These do NOT come from the",
-  "spreadsheet. The anchors were measured against the recording - A, B and C",
-  "from Brian, the outro from Brian, b3 and the ending from gong detection.",
-  "The sheet's own section timestamps are approximate and disagree.",
+  "spreadsheet - they were measured against the recording by Brian, except",
+  "'b3' and 'end', which came from gong detection.",
   "",
-  "'sections' records how long each section is and how many times it is played.",
-  "The build compares the sheet against this and stops if it differs, because a",
-  "section changing length moves the knots below and that has to be re-measured.",
+  "'knots' is [key, played-bar index, seconds, label shown in the page's",
+  "calibration panel]. The page interpolates linearly between them, so every",
+  "knot is a point where the map is exact. Adding a knot in a stretch that",
+  "feels loose is the way to tighten it.",
   "",
-  "knotbars: played-bar positions of the piecewise-linear map's joints.",
-  "'start:<section>' resolves to that section's first played bar; 'NB' is the end."
+  "'sections' records each section's length and how many times it is played.",
+  "The build compares the sheet against this and stops if it differs, because",
+  "a section changing length moves every knot after it."
  ],
  "DUR": 660.6,
- "anch": {
-  "b3": 7.197,
-  "A": 36.066,
-  "B": 215.825,
-  "C": 426.404,
-  "O": 580.466,
-  "end": 658.39
- },
- "rB": 3.205,
- "knotbars": [
-  0,
-  11,
-  67,
-  127,
-  "start:C Section (Pengecet)",
-  "start:Outro (Peralihan)",
-  "NB"
- ],
  "sections": [
   {
    "name": "Introduction (Kawitan)",
@@ -77,5 +60,91 @@
    "bars": 5,
    "rep": 1
   }
+ ],
+ "knots": [
+  [
+   "b3",
+   2,
+   7.197,
+   "Bar 3 begins"
+  ],
+  [
+   "A",
+   11,
+   36.066,
+   "Section A begins"
+  ],
+  [
+   "T1",
+   62,
+   199.229,
+   "Transition 1 begins"
+  ],
+  [
+   "B",
+   67,
+   215.309,
+   "B section, pass 1"
+  ],
+  [
+   "B2",
+   87,
+   279.703,
+   "B section, pass 2"
+  ],
+  [
+   "B3",
+   107,
+   343.295,
+   "B section, pass 3"
+  ],
+  [
+   "T2",
+   127,
+   407.545,
+   "Transition 2 begins"
+  ],
+  [
+   "C",
+   133,
+   426.395,
+   "C section, pass 1"
+  ],
+  [
+   "C2",
+   149,
+   477.669,
+   "C section, pass 2"
+  ],
+  [
+   "C3",
+   165,
+   528.808,
+   "C section, pass 3"
+  ],
+  [
+   "O",
+   181,
+   580.0,
+   "Outro begins"
+  ],
+  [
+   "P",
+   184,
+   589.683,
+   "Pekaad begins"
+  ],
+  [
+   "Y",
+   200,
+   640.814,
+   "Penyuud begins"
+  ],
+  [
+   "end",
+   205,
+   658.39,
+   "Last bar ends"
+  ]
  ]
 }
