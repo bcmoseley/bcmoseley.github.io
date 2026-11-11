@@ -162,20 +162,19 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
    so take it from the page gutter rather than from the notation. */
 @media (max-width:480px){
   :root{
-    --labw:3.4rem;
+    --labw:2.85rem;
     /* never wider than the cap, but shrink as needed so 16 cells always fit:
-       4.5rem covers the label, the page gutter and the card borders */
-    --cw:min(1.3rem, calc((100vw - 4.6rem) / 16));
+       4.05rem covers the label, the page gutter and the card borders */
+    --cw:min(1.3rem, calc((100vw - 4.05rem) / 16));
   }
   body{padding-left:.5rem;padding-right:.5rem}
   .bar{padding-block:.35rem;gap:.3rem .45rem}
   .nav{padding-block:.1rem}
   /* the two-letter labels freed enough width for larger digits */
   .c{font-size:.84rem}
-  /* the "no stem of its own" marker sits at the column edge instead of
-     taking 13px from every row to suit the two that carry it */
-  .lab{position:sticky}
-  .mix{position:absolute;right:1px;top:0;font-size:.5rem;line-height:1.4}
+  /* the "no stem of its own" marker is dropped on phones: it crowded a
+     two-letter column, and the legend carries the same information */
+  .mix{display:none}
   /* the instrument picker was 250px and pushed the controls onto extra rows */
   select.inst{max-width:6.5rem}
   /* a swipe moves by exactly one bar. scroll-padding keeps the snap clear of
@@ -189,16 +188,16 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
    which left two bars 10px too wide to fit. */
 @media (orientation:landscape) and (max-height:520px){
   :root{
-    --labw:3.4rem;
+    --labw:2.85rem;
     /* same idea, for two bars: fits a 568pt SE as well as a 932pt Pro Max.
-       4.5rem = label + both page gutters + the card's borders */
-    --cw:min(1.55rem, calc((100vw - 4.6rem) / 32));
+       4.05rem = label + both page gutters + the card's borders */
+    --cw:min(1.55rem, calc((100vw - 4.05rem) / 32));
   }
   body{padding-left:.5rem;padding-right:.5rem}
   .nm{display:none}
   .nmshort{display:inline;overflow:hidden;text-overflow:ellipsis}
   .lab{font-size:.68rem;gap:.2rem;padding:0 .3rem 0 .1rem}
-  .mix{position:absolute;right:1px;top:0;font-size:.5rem;line-height:1.4}
+  .mix{display:none}
   .play{width:1.05rem;height:1.05rem}
   .play svg{width:.55rem;height:.55rem}
 
