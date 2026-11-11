@@ -150,6 +150,66 @@ select.inst{font-family:var(--sans);font-size:.74rem;color:var(--muted);backgrou
   .play{width:1.05rem;height:1.05rem}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- phones ---------- */
+
+/* Keyboard hints mean nothing on a touch screen, and in landscape this one
+   was 125x90, taller than anything else in the sticky bar and forcing it to
+   148px of a 390px-high screen. */
+@media (pointer:coarse){ .hint{display:none} }
+
+/* Portrait: fit one whole bar across, label and all. It was missing by 4px,
+   so take it from the page gutter rather than from the notation. */
+@media (max-width:480px){
+  :root{
+    --labw:5.5rem;
+    /* never wider than before, but shrink as needed so 16 cells always fit:
+       6.75rem covers the label, the page gutter and the card borders */
+    --cw:min(1.05rem, calc((100vw - 6.75rem) / 16));
+  }
+  body{padding-left:.5rem;padding-right:.5rem}
+  .bar{padding-block:.35rem;gap:.3rem .45rem}
+  .nav{padding-block:.1rem}
+  /* the instrument picker was 250px and pushed the controls onto extra rows */
+  select.inst{max-width:6.5rem}
+  /* a swipe moves by exactly one bar. scroll-padding keeps the snap clear of
+     the sticky label column, which otherwise covers the bar's first beat. */
+  .scroll{scroll-snap-type:x proximity;scroll-padding-left:var(--labw)}
+  .c.b1{scroll-snap-align:start}
+}
+
+/* Landscape phone: wide but very short. The width breakpoints alone gave this
+   the desktop treatment - full instrument names and a 188px label column -
+   which left two bars 10px too wide to fit. */
+@media (orientation:landscape) and (max-height:520px){
+  :root{
+    --labw:5.25rem;
+    /* same idea, for two bars: fits a 568pt SE as well as a 932pt Pro Max.
+       6.75rem = label + both page gutters + the card's borders */
+    --cw:min(1.45rem, calc((100vw - 6.75rem) / 32));
+  }
+  body{padding-left:.5rem;padding-right:.5rem}
+  .nm{display:none}
+  .nmshort{display:inline;overflow:hidden;text-overflow:ellipsis}
+  .lab{font-size:.68rem;gap:.2rem;padding:0 .3rem 0 .1rem}
+  .play{width:1.05rem;height:1.05rem}
+  .play svg{width:.55rem;height:.55rem}
+
+  /* shorter rows: all eleven parts and the beat header on one screen */
+  .c{font-size:.78rem;height:1.3rem;line-height:1.3rem}
+  .hdr .c{font-size:.55rem;height:.95rem;line-height:.95rem}
+
+  /* give the sticky bar back to the music */
+  .bar{padding-block:.3rem;gap:.35rem .5rem}
+  .bar .btn,.bar .pass b,select.inst{font-size:.7rem}
+  .nav{padding-block:.1rem}
+  .nav button{padding:.16rem .5rem}
+  h1{font-size:1.15rem;margin-bottom:.15rem}
+  header{margin-bottom:.5rem}
+  .sub,.legend{display:none}
+  .blk{margin-bottom:.5rem}
+  .blkhd{padding-block:.2rem}
+}
 </style>
 
 <div class="wrap">
